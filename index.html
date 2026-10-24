@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fb741c"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="غزالة">
+<meta name="description" content="غزالة - مطاعم، مزارع، بقالة ونقل">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="assets/logo.png"><link rel="stylesheet" href="styles.css">
+<title>غزالة</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+</head>
+<body>
+<header class="top"><button id="menuBtn" class="icon-btn" aria-label="القائمة">☰</button><img src="assets/logo.png" class="logo" alt="غزالة"><button id="cartBtn" class="icon-btn" aria-label="السلة">🛒<span id="cartCount" class="count">0</span></button></header>
+<main id="app">
+<section id="homeView" class="view active">
+<div class="welcome"><div><small>أهلاً بك في</small><h1>غزالة</h1><p>كل احتياجاتك بمكان واحد</p></div><img src="assets/logo.png" alt="" class="welcome-logo"></div>
+<div class="section-title"><h2>اكتشف خدماتنا</h2></div>
+<div class="services">
+<button class="service" data-view="restaurants"><img src="assets/food.png" alt=""><b>المطاعم</b></button>
+<button class="service" data-view="bazar"><img src="assets/grocery.png" alt=""><b>البازار</b></button>
+<button class="service" data-view="transport"><img src="assets/transport.png" alt=""><b>النقل والتاكسي</b></button>
+<button class="service emoji" data-view="farms"><span>🌿</span><b>المزارع</b></button>
+<button class="service emoji" data-view="trips"><span>🚌</span><b>النقل الخارجي</b></button>
+<button class="service emoji" data-view="support"><span>💬</span><b>الدعم</b></button>
+</div>
+<div class="section-title"><h2>العروض</h2><button data-view="discounts" class="text-btn">عرض الكل</button></div><div id="offers" class="horizontal-list"><div class="loading">جاري تحميل العروض…</div></div>
+<div class="section-title"><h2>مطاعم مميزة</h2><button data-view="restaurants" class="text-btn">عرض الكل</button></div><div id="featuredRestaurants" class="cards"><div class="loading">جاري تحميل المطاعم…</div></div>
+<div class="section-title"><h2>المزارع</h2><button data-view="farms" class="text-btn">عرض الكل</button></div><div id="featuredFarms" class="cards"><div class="loading">جاري تحميل المزارع…</div></div>
+</section>
+<section id="listView" class="view"><button class="back" data-view="home">← الرئيسية</button><h1 id="listTitle">القائمة</h1><div id="listContent" class="cards"></div></section>
+<section id="detailView" class="view"><button class="back" id="detailBack">← رجوع</button><div id="detailContent"></div></section>
+<section id="taxiView" class="view">
+ <button class="back" data-view="home">← الرئيسية</button>
+ <h1>التاكسي والنقل</h1>
+ <p class="muted">حدد موقع انطلاقك والوجهة على الخريطة، وسيُحدَّد الزون حسب موقع الانطلاق.</p>
+ <div class="search-wrap"><span>⌕</span><input id="taxiStartSearch" type="search" placeholder="ابحث عن منطقة أو شارع أو مكان للانطلاق" autocomplete="off"><button id="taxiSearchClear" aria-label="مسح البحث">×</button><div id="taxiSearchResults" class="search-results" hidden></div></div>
+ <div class="taxi-actions"><button id="taxiMyLocation" class="small-btn">📍 تحديد موقعي</button><button id="taxiChooseStart" class="small-btn">تحديد الانطلاق بالخريطة</button><button id="taxiClearDestination" class="small-btn">مسح الوجهة</button></div>
+ <p class="map-hint">اختر نتيجة البحث أو اضغط على الخريطة لتحديد الوجهة. استخدم زر تحديد الانطلاق ثم اضغط على الخريطة لتعديل نقطة الانطلاق.</p>
+ <div id="taxiMap" aria-label="خريطة اختيار الانطلاق والوجهة"></div>
+ <div class="panel taxi-panel">
+  <div class="location-line"><span class="pin start-pin">●</span><div><b>موقع الانطلاق</b><div id="taxiStartLabel" class="muted">جاري تحديد موقعك…</div></div></div>
+  <div class="location-line"><span class="pin end-pin">●</span><div><b>الوجهة</b><div id="taxiEndLabel" class="muted">اضغط على الخريطة لتحديد الوجهة</div></div></div>
+  <div class="taxi-summary"><div><small>الزون</small><b id="taxiZoneLabel">بانتظار الموقع</b></div><div><small>المسافة التقريبية</small><b id="taxiDistance">—</b></div><div><small>الأجرة التقديرية</small><b id="taxiFare">—</b></div></div>
+  <label>رقم هاتفك <input id="taxiPhone" type="tel" inputmode="tel" maxlength="11" placeholder="07xxxxxxxxx" autocomplete="tel"></label>
+  <button id="taxiRequestBtn" class="primary">إرسال طلب التاكسي</button>
+  <p id="taxiMessage" role="status" class="muted"></p>
+ </div>
+</section>
+<section id="taxiWaitingView" class="view"><button class="back" data-view="home">← الرئيسية</button><div class="panel tracking-panel"><div class="tracking-head"><span class="tracking-pulse"></span><div><h1>متابعة طلب التاكسي</h1><p id="taxiOrderStatus">الحالة: بانتظار قبول السائق</p></div></div><p>رقم الطلب: <b id="taxiOrderId"></b></p><div id="taxiTrackingMap" aria-label="خريطة تتبع السائق"></div><p id="taxiTrackingHint" class="muted">ستظهر حركة السائق هنا عندما يرسل التطبيق موقعه إلى Firebase.</p><button class="small-btn" id="taxiCancelOrder">إلغاء الطلب</button><button class="primary" data-view="taxi">طلب جديد</button></div></section>
+<div id="installPrompt" class="install-overlay" hidden><div class="install-card" role="dialog" aria-modal="true" aria-labelledby="installTitle"><button id="installClose" class="install-close" aria-label="إغلاق">×</button><img src="assets/logo.png" alt="غزالة"><h2 id="installTitle">ثبّت غزالة على الآيفون</h2><p>أضف التطبيق إلى الشاشة الرئيسية للوصول إليه بسرعة وبملء الشاشة.</p><ol><li>اضغط زر <b>المشاركة</b> <span class="share-glyph">↑</span> في Safari.</li><li>اختر <b>إضافة إلى الشاشة الرئيسية</b>.</li><li>اضغط <b>إضافة</b> بالأعلى.</li></ol><button id="installGotIt" class="primary">تمام، فهمت</button><small>إذا كنت تستخدم متصفحاً آخر، افتح الرابط في Safari أولاً.</small></div></div>
+<section id="cartView" class="view"><h1>سلة التسوق</h1><div id="cartItems"></div><div class="checkout"><b>المجموع: <span id="cartTotal">0</span> د.ع</b><button id="checkoutBtn" class="primary">إتمام الطلب</button></div><form id="foodOrderForm" class="panel" hidden><h2>معلومات التوصيل</h2><label>الاسم الكامل<input id="foodName" required autocomplete="name" placeholder="اسم المستلم"></label><label>رقم الهاتف<input id="foodPhone" type="tel" required inputmode="tel" maxlength="11" placeholder="07xxxxxxxxx"></label><label>عنوان التوصيل<input id="foodAddress" required placeholder="المحافظة، المنطقة، أقرب نقطة دالة"></label><label>ملاحظات للمطعم<textarea id="foodNotes" rows="3" placeholder="ملاحظات إضافية (اختياري)"></textarea></label><p id="foodOrderMessage" class="muted"></p><button class="primary" id="foodSubmit" type="submit">إرسال طلب المطعم</button></form></section>
+<section id="accountView" class="view"><h1>حسابي</h1><div id="accountStatus" class="panel"></div><div id="authPanel" class="panel"><div class="tabs"><button class="active" data-auth="login">تسجيل الدخول</button><button data-auth="register">حساب جديد</button></div><form id="authForm"><label>الاسم <input id="authName" autocomplete="name" placeholder="الاسم الكامل"></label><label>البريد الإلكتروني <input id="authEmail" type="email" required autocomplete="email" placeholder="name@example.com"></label><label>كلمة المرور <input id="authPassword" type="password" minlength="6" required autocomplete="current-password" placeholder="6 أحرف على الأقل"></label><button class="primary" type="submit" id="authSubmit">تسجيل الدخول</button><p id="authMessage" role="status"></p></form></div></section>
+<section id="supportView" class="view"><h1>الدعم والتواصل</h1><div class="panel"><p>نحن هنا لمساعدتك.</p><a href="https://wa.me/" target="_blank" rel="noopener">تواصل عبر واتساب</a><p><a href="https://www.facebook.com/ghazalaapp" target="_blank" rel="noopener">Facebook</a> · <a href="https://www.instagram.com/ghazala.iraq" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.tiktok.com/@ghazala.app" target="_blank" rel="noopener">TikTok</a></p></div></section>
+</main>
+<nav class="bottom-nav"><button class="selected" data-view="home"><span>⌂</span>الرئيسية</button><button data-view="discounts"><span>％</span>الخصومات</button><button data-view="account"><span>♙</span>حسابي</button></nav>
+<div id="toast" class="toast" role="status"></div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script><script src="firebase-config.js"></script><script src="app.js"></script>
+</body></html>
